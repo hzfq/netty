@@ -1,0 +1,17 @@
+1.下载仓库源码
+    git clone https://github.com/hzfq/netty.git
+2.导入idea
+3.编译步骤
+    3.1 编译comon模块:
+        cd common
+        mvn clean compile
+    3.2 编译整个项目:
+        cd ..
+        mvn clean compile
+4.运行example模块示例
+    启动服务端：运行echo.EchoServer#main方法，控制台打印信息，则启动成功
+    启动客户端：运行echo.EchoClient#main方法，服务端控制台打印客户端id以及ip:port，
+        此时客户端和服务端的通道建立成功
+5.问题：
+    测试类的断言语句含义不清，需要强转
+    克隆出的代码如果格式化会导致编译异常
