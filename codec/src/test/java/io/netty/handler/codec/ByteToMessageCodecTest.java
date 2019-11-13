@@ -62,7 +62,7 @@ public class ByteToMessageCodecTest {
         assertTrue(ch.writeInbound(buffer));
         ch.pipeline().remove(codec);
         assertTrue(ch.finish());
-        assertEquals(1, ch.readInbound());
+        assertEquals((Integer) 1, ch.readInbound());
 
         ByteBuf buf = ch.readInbound();
         assertEquals(Unpooled.wrappedBuffer(new byte[]{'0'}), buf);
@@ -78,10 +78,12 @@ public class ByteToMessageCodecTest {
         }
 
         @Override
-        protected void encode(ChannelHandlerContext ctx, Integer msg, ByteBuf out) throws Exception { }
+        protected void encode(ChannelHandlerContext ctx, Integer msg, ByteBuf out) throws Exception {
+        }
 
         @Override
-        protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception { }
+        protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        }
     }
 
     @ChannelHandler.Sharable
@@ -91,9 +93,11 @@ public class ByteToMessageCodecTest {
         }
 
         @Override
-        protected void encode(ChannelHandlerContext ctx, Integer msg, ByteBuf out) throws Exception { }
+        protected void encode(ChannelHandlerContext ctx, Integer msg, ByteBuf out) throws Exception {
+        }
 
         @Override
-        protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception { }
+        protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        }
     }
 }

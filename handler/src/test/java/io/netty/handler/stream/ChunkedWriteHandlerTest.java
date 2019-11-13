@@ -18,22 +18,14 @@ package io.netty.handler.stream;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelOutboundHandlerAdapter;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.*;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.channels.Channels;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
@@ -41,7 +33,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.util.concurrent.TimeUnit.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.*;
 
 public class ChunkedWriteHandlerTest {
@@ -78,8 +70,7 @@ public class ChunkedWriteHandlerTest {
     public void testChunkedStream() {
         check(new ChunkedStream(new ByteArrayInputStream(BYTES)));
 
-        check(new ChunkedStream(new ByteArrayInputStream(BYTES)),
-                new ChunkedStream(new ByteArrayInputStream(BYTES)),
+        check(new ChunkedStream(new ByteArrayInputStream(BYTES)), new ChunkedStream(new ByteArrayInputStream(BYTES)),
                 new ChunkedStream(new ByteArrayInputStream(BYTES)));
     }
 
@@ -264,7 +255,7 @@ public class ChunkedWriteHandlerTest {
         ch.writeAndFlush(input).syncUninterruptibly();
         assertTrue(ch.finish());
 
-        assertEquals(0, ch.readOutbound());
+        assertEquals((Integer) 0, ch.readOutbound());
         assertNull(ch.readOutbound());
     }
 
@@ -296,13 +287,13 @@ public class ChunkedWriteHandlerTest {
     @Test
     public void testSkipAfterFailedChunkedStream() throws IOException {
         checkSkipFailed(new ChunkedStream(new ByteArrayInputStream(BYTES)),
-                        new ChunkedStream(new ByteArrayInputStream(BYTES)));
+                new ChunkedStream(new ByteArrayInputStream(BYTES)));
     }
 
     @Test
     public void testSkipAfterFailedChunkedNioStream() throws IOException {
         checkSkipFailed(new ChunkedNioStream(Channels.newChannel(new ByteArrayInputStream(BYTES))),
-                        new ChunkedNioStream(Channels.newChannel(new ByteArrayInputStream(BYTES))));
+                new ChunkedNioStream(Channels.newChannel(new ByteArrayInputStream(BYTES))));
     }
 
     @Test
@@ -341,7 +332,7 @@ public class ChunkedWriteHandlerTest {
 
         // 3 out of 4 chunks were already written
         int read = 0;
-        for (;;) {
+        for (; ; ) {
             ByteBuf buffer = ch.readOutbound();
             if (buffer == null) {
                 break;
@@ -613,7 +604,7 @@ public class ChunkedWriteHandlerTest {
     private static void check(Object... inputs) {
         EmbeddedChannel ch = new EmbeddedChannel(new ChunkedWriteHandler());
 
-        for (Object input: inputs) {
+        for (Object input : inputs) {
             ch.writeOutbound(input);
         }
 
@@ -621,7 +612,7 @@ public class ChunkedWriteHandlerTest {
 
         int i = 0;
         int read = 0;
-        for (;;) {
+        for (; ; ) {
             ByteBuf buffer = ch.readOutbound();
             if (buffer == null) {
                 break;
@@ -684,7 +675,7 @@ public class ChunkedWriteHandlerTest {
         // we expect to see the second message, chunk by chunk
         int i = 0;
         int read = 0;
-        for (;;) {
+        for (; ; ) {
             ByteBuf buffer = ch.readOutbound();
             if (buffer == null) {
                 break;
